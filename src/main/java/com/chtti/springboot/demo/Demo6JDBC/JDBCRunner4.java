@@ -12,6 +12,8 @@ import javax.swing.*;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -46,7 +48,23 @@ public class JDBCRunner4 implements CommandLineRunner {
                 (rs, rowNum) -> new User(rs.getString("USERNAME"),
                         rs.getString("HASHPASSWORD")));
         users.forEach(user -> LOGGER.info(user.toString()));
+    }private void insertSomeData2() {
+        List<Object[]> splitUpNames = Arrays.asList("Mark password1", "John password2", "Ken password3", "Tim password4")
+                .stream().map(new Function<String, String[]>() {
+                    @Override
+                    public String[] apply(String s) {
+                        return s.split(" ");
+                    }
+                }).collect(Collectors.toList());
+        splitUpNames.forEach(new Consumer<Object[]>() {
+            @Override
+            public void accept(Object[] userPasswordPair) {
+                LOGGER.info("user={}, hashed password={}", userPasswordPair[0],
+                        userPasswordPair[1]);
+            }
+        });
     }
+
 
 
     public void inserSomeData(){
